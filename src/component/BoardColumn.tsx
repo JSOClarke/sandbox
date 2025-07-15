@@ -3,10 +3,13 @@ export default function BoardColumn({
   statusCatsTitle,
   taskCollection,
   handleTaskSelection,
+  selectedProject,
 }) {
   const filteredCollection = taskCollection.filter(
-    (task) => task.status === statusCatsTitle
+    (task) =>
+      task.status === statusCatsTitle && task.project.id === selectedProject.id
   )
+  console.log(selectedProject)
   return (
     <div className="container">
       <div className="board-title flex items-center gap-2 p-2">

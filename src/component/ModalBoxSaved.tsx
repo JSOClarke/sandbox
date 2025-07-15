@@ -10,6 +10,8 @@ export default function ModalBoxSaved({
   setSubtask1Value,
   handleCheckboxEdit,
   subtasks,
+  setIsEditable,
+  handleEditButton,
 }) {
   const modalSavedRef = useRef(null)
 
@@ -27,6 +29,8 @@ export default function ModalBoxSaved({
     }
   })
 
+  const totalNonEmptySubtasks = subtasks.filter((st) => st.title !== '')
+  const completedSubtasks = subtasks.filter((st) => st.completed === true)
   return (
     <div ref={modalSavedRef} className="modal-container flex flex-col h-full">
       <div className="title flex justify-between items-center">
@@ -35,21 +39,28 @@ export default function ModalBoxSaved({
           {titleValue}
         </div>
         <div className="edit text-gray-200 font-bold ">
-          <EllipsisVertical />
+          <button>
+            <EllipsisVertical onClick={() => handleEditButton()} />
+          </button>
         </div>
       </div>
-      <div className="description text-gray-200 full">{descriptionValue}</div>
+      <div className="description text-md text-gray-500 full">
+        {descriptionValue}
+      </div>
 
-      <div className="subtask-content-container">
+      <div className="subtask-content-container  ">
+        <div className="text-white text-sm py-2">{`Subtasks (${completedSubtasks.length} of ${totalNonEmptySubtasks.length}`}</div>
         {subtasks.map((subtask, idx) => {
-          return subtask.text !== '' ? (
+          if (!subtask.text) return null
+
+          return (
             <div
               key={`subtask-${idx}`}
-              className={`subtask bg-primary text-white flex gap-2 p-2 ${
-                subtask.completed && 'line-through'
+              className={`subtask bg-primary text-white flex gap-2 p-2 mb-4 ${
+                subtask.completed ? 'line-through' : ''
               }`}
             >
-              <label>
+              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={subtask.completed}
@@ -60,14 +71,14 @@ export default function ModalBoxSaved({
                     })
                   }
                 />
+                <span>{subtask.text}</span>
               </label>
-              {subtask.text}
             </div>
-          ) : null
+          )
         })}
       </div>
-      <div className="current-status mt-auto flex flex-col">
-        <label htmlFor="current-staus" className="text-white text-sm">
+      <div className="current-status mt-auto flex flex-col py-4">
+        <label htmlFor="current-staus" className="text-white text-sm py-4">
           Current Status
         </label>
         <select
